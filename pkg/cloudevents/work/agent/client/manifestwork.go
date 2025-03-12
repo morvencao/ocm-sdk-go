@@ -17,10 +17,10 @@ import (
 	workv1client "open-cluster-management.io/api/client/work/clientset/versioned/typed/work/v1"
 	workv1 "open-cluster-management.io/api/work/v1"
 
+	cloudeventserrors "open-cluster-management.io/sdk-go/pkg/cloudevents/errors"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/generic"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/generic/types"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/work/common"
-	workerrors "open-cluster-management.io/sdk-go/pkg/cloudevents/work/errors"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/work/store"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/work/utils"
 )
@@ -169,7 +169,7 @@ func (c *ManifestWorkAgentClient) Patch(ctx context.Context, name string, pt kub
 		// publish the status update event to source, source will check the resource version
 		// and reject the update if it's status update is outdated.
 		if err := c.cloudEventsClient.Publish(ctx, eventType, newWork); err != nil {
-			returnErr := workerrors.NewPublishError(common.ManifestWorkGR, name, err)
+			returnErr := cloudeventserrors.NewPublishError(common.ManifestWorkGR, name, err)
 			generic.IncreaseWorkProcessedCounter("patch", string(returnErr.ErrStatus.Reason))
 			return nil, returnErr
 		}
@@ -231,7 +231,7 @@ func (c *ManifestWorkAgentClient) Patch(ctx context.Context, name string, pt kub
 
 		eventType.Action = common.DeleteRequestAction
 		if err := c.cloudEventsClient.Publish(ctx, eventType, newWork); err != nil {
-			returnErr := workerrors.NewPublishError(common.ManifestWorkGR, name, err)
+			returnErr := cloudeventserrors.NewPublishError(common.ManifestWorkGR, name, err)
 			generic.IncreaseWorkProcessedCounter("delete", string(returnErr.ErrStatus.Reason))
 			return nil, returnErr
 		}

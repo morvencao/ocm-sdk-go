@@ -15,10 +15,10 @@ import (
 	workv1client "open-cluster-management.io/api/client/work/clientset/versioned/typed/work/v1"
 	workv1 "open-cluster-management.io/api/work/v1"
 
+	cloudeventserrors "open-cluster-management.io/sdk-go/pkg/cloudevents/errors"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/generic"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/generic/types"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/work/common"
-	workerrors "open-cluster-management.io/sdk-go/pkg/cloudevents/work/errors"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/work/payload"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/work/store"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/work/utils"
@@ -101,7 +101,7 @@ func (c *ManifestWorkSourceClient) Create(ctx context.Context, manifestWork *wor
 	}
 
 	if err := c.cloudEventsClient.Publish(ctx, eventType, newWork); err != nil {
-		returnErr := workerrors.NewPublishError(common.ManifestWorkGR, manifestWork.Name, err)
+		returnErr := cloudeventserrors.NewPublishError(common.ManifestWorkGR, manifestWork.Name, err)
 		generic.IncreaseWorkProcessedCounter("create", string(returnErr.ErrStatus.Reason))
 		return nil, returnErr
 	}
@@ -149,7 +149,7 @@ func (c *ManifestWorkSourceClient) Delete(ctx context.Context, name string, opts
 	deletingWork.DeletionTimestamp = &now
 
 	if err := c.cloudEventsClient.Publish(ctx, eventType, deletingWork); err != nil {
-		returnErr := workerrors.NewPublishError(common.ManifestWorkGR, name, err)
+		returnErr := cloudeventserrors.NewPublishError(common.ManifestWorkGR, name, err)
 		generic.IncreaseWorkProcessedCounter("delete", string(returnErr.ErrStatus.Reason))
 		return returnErr
 	}
@@ -273,7 +273,7 @@ func (c *ManifestWorkSourceClient) Patch(ctx context.Context, name string, pt ku
 	}
 
 	if err := c.cloudEventsClient.Publish(ctx, eventType, newWork); err != nil {
-		returnErr := workerrors.NewPublishError(common.ManifestWorkGR, name, err)
+		returnErr := cloudeventserrors.NewPublishError(common.ManifestWorkGR, name, err)
 		generic.IncreaseWorkProcessedCounter("patch", string(returnErr.ErrStatus.Reason))
 		return nil, returnErr
 	}

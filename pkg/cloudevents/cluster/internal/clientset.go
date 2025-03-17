@@ -4,7 +4,7 @@ import (
 	discovery "k8s.io/client-go/discovery"
 	"k8s.io/client-go/rest"
 
-	clusterlientset "open-cluster-management.io/api/client/cluster/clientset/versioned"
+	clusterclientset "open-cluster-management.io/api/client/cluster/clientset/versioned"
 	clusterv1client "open-cluster-management.io/api/client/cluster/clientset/versioned/typed/cluster/v1"
 	clusterv1alpha1client "open-cluster-management.io/api/client/cluster/clientset/versioned/typed/cluster/v1alpha1"
 	clusterv1beta1client "open-cluster-management.io/api/client/cluster/clientset/versioned/typed/cluster/v1beta1"
@@ -19,7 +19,7 @@ type ClusterClientSetWrapper struct {
 	ClusterV1ClientWrapper *ClusterV1ClientWrapper
 }
 
-var _ clusterlientset.Interface = &ClusterClientSetWrapper{}
+var _ clusterclientset.Interface = &ClusterClientSetWrapper{}
 
 func (c *ClusterClientSetWrapper) ClusterV1() clusterv1client.ClusterV1Interface {
 	return c.ClusterV1ClientWrapper

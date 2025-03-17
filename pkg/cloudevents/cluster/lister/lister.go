@@ -7,8 +7,8 @@ import (
 
 	clusterv1 "open-cluster-management.io/api/cluster/v1"
 
-	"open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/common"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/store"
+	"open-cluster-management.io/sdk-go/pkg/cloudevents/common"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/generic/types"
 )
 

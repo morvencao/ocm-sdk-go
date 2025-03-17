@@ -18,15 +18,15 @@ import (
 	clusterv1 "open-cluster-management.io/api/cluster/v1"
 
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/codec"
-	"open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/common"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/store"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/cluster/utils"
+	"open-cluster-management.io/sdk-go/pkg/cloudevents/common"
 	cloudeventserrors "open-cluster-management.io/sdk-go/pkg/cloudevents/errors"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/generic"
 	"open-cluster-management.io/sdk-go/pkg/cloudevents/generic/types"
 )
 
-// ManagedClusterAgentClient implements the ManagedClusterInterface. It sends the managedclusters status back to source by
+// ManagedClusterAgentClient implements the ManagedClusterInterface. It sends the managedclusters to source by
 // CloudEventAgentClient.
 type ManagedClusterAgentClient struct {
 	sync.RWMutex
@@ -222,7 +222,7 @@ func (c *ManagedClusterAgentClient) Patch(ctx context.Context, name string, pt k
 	// it back to source
 	if !newCluster.DeletionTimestamp.IsZero() && len(newCluster.Finalizers) == 0 {
 		meta.SetStatusCondition(&newCluster.Status.Conditions, metav1.Condition{
-			Type:    common.ManagedClusterDeleted,
+			Type:    common.ConditionDeleted,
 			Status:  metav1.ConditionTrue,
 			Reason:  "ManagedClusterDeleted",
 			Message: fmt.Sprintf("The manifests are deleted from the cluster %s", newCluster.Namespace),

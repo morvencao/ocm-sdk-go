@@ -1,6 +1,7 @@
 package common
 
 import (
+	certificatev1 "k8s.io/api/certificates/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	clusterv1 "open-cluster-management.io/api/cluster/v1"
 )
@@ -16,8 +17,8 @@ const (
 // CloudEventsOriginalSourceLabelKey is the key of the cloudevents original source label.
 const CloudEventsOriginalSourceLabelKey = "cloudevents.open-cluster-management.io/originalsource"
 
-// ManagedClusterDeleted represents the managedcluster is deleted.
-const ManagedClusterDeleted = "Deleted"
+// ConditionDeleted represents the object is deleted.
+const ConditionDeleted = "Deleted"
 
 const (
 	CreateRequestAction = "create_request"
@@ -27,3 +28,6 @@ const (
 
 var ManagedClusterGK = schema.GroupKind{Group: clusterv1.GroupName, Kind: "ManagedCluster"}
 var ManagedClusterGR = schema.GroupResource{Group: clusterv1.GroupName, Resource: "managedclusters"}
+
+var CSRGK = schema.GroupKind{Group: certificatev1.GroupName, Kind: "CertificateSigningRequest"}
+var CSRGR = schema.GroupResource{Group: certificatev1.GroupName, Resource: "certificatesigningrequests"}

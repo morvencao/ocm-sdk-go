@@ -273,6 +273,7 @@ func (o *GRPCOptions) GetCloudEventsProtocol(ctx context.Context, errorHandler f
 			}
 
 			newState := conn.GetState()
+			logger.Info("======== grpc connection state: old state - %s, new state - %s", state.String(), newState.String())
 			// If any failure in any of the steps needed to establish connection, or any failure
 			// encountered while expecting successful communication on established channel, the
 			// grpc client connection state will be TransientFailure.
@@ -280,15 +281,14 @@ func (o *GRPCOptions) GetCloudEventsProtocol(ctx context.Context, errorHandler f
 			// which will result in connection state changed from Ready to Shutdown.
 			// When server is closed, client will NOT close or reestablish the connection proactively,
 			// it will only change the connection state from Ready to Idle.
-			if newState == connectivity.TransientFailure || newState == connectivity.Shutdown ||
-				newState == connectivity.Idle {
+			if newState == connectivity.Shutdown {
 				errorHandler(fmt.Errorf("grpc connection is disconnected (state=%s)", newState))
-				if newState != connectivity.Shutdown {
-					// don't close the connection if it's already shutdown
-					if err := conn.Close(); err != nil {
-						logger.Error(err, "failed to close gRPC connection")
-					}
-				}
+				// if newState != connectivity.Shutdown {
+				// 	// don't close the connection if it's already shutdown
+				// 	if err := conn.Close(); err != nil {
+				// 		logger.Error(err, "failed to close gRPC connection")
+				// 	}
+				// }
 				return // exit the goroutine as the error handler function will handle the reconnection.
 			}
 
